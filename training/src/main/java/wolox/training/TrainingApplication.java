@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("org.baeldung.persistence.repo")
 @EntityScan("org.baeldung.persistence.model")
 @SpringBootApplication
+
+
 public class TrainingApplication {
 
 	public static void main(String[] args) {
