@@ -7,44 +7,38 @@ import org.springframework.web.bind.annotation.*;
 import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
-import wolox.training.repositories.IBookRepositoryDAO;
+import wolox.training.repositories.BookRepository;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
     @Autowired
-    private IBookRepositoryDAO IBookRepositoryDAO;
-
+    private BookRepository BookRepository;
 
 
     @GetMapping
     public Iterable findAll() {
-        return IBookRepositoryDAO.findAll();
+        return BookRepository.findAll();
     }
-
-    /*@GetMapping("/author/{bookAuthor}")
-    public Book findByAuthor(@PathVariable String bookAuthor) {
-        return IBookRepositoryDAO.findByAuthor(bookAuthor);
-    }*/
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return IBookRepositoryDAO.findById(id)
+        return BookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return IBookRepositoryDAO.save(book);
+        return BookRepository.save(book);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        IBookRepositoryDAO.findById(id)
+        BookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        IBookRepositoryDAO.deleteById(id);
+        BookRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
@@ -52,8 +46,8 @@ public class BookController {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }
-        IBookRepositoryDAO.findById(id)
+        BookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        return IBookRepositoryDAO.save(book);
+        return BookRepository.save(book);
     }
 }
