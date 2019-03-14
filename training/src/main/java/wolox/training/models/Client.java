@@ -21,8 +21,8 @@ public class Client {
     @Column(nullable = false)
     private LocalDate birthdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "book_client",
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "client_id",
                     referencedColumnName = "id"))
