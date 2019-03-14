@@ -10,46 +10,33 @@ public class Book {
     private long id;
 
     @Column(nullable = false, unique = true)
-    private String Title;
+    private String title;
 
     @Column(nullable = false)
-    private String Author;
+    private String author;
 
     @Column(nullable = false)
-    private String Image;
+    private String image;
 
     @Column(nullable = false)
-    private String Subtitle;
+    private String subtitle;
 
     @Column(nullable = false)
-    private String Publisher;
+    private String publisher;
 
     @Column(nullable = false)
-    private String Year;
+    private String year;
 
     @Column(nullable = false)
-    private int Pages;
+    private int pages;
 
     @Column(nullable = false)
     private String isbn;
 
     @Column()
-    private String Genre;
+    private String genre;
 
     public Book() {
-    }
-
-    public Book(long id, String title, String author, String image, String subtitle, String publisher, String year, int pages, String isbn, String genre) {
-        this.id = id;
-        Title = title;
-        Author = author;
-        Image = image;
-        Subtitle = subtitle;
-        Publisher = publisher;
-        Year = year;
-        Pages = pages;
-        this.isbn = isbn;
-        Genre = genre;
     }
 
     public long getId() {
@@ -61,59 +48,59 @@ public class Book {
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public String getAuthor() {
-        return Author;
+        return author;
     }
 
     public void setAuthor(String author) {
-        Author = author;
+        this.author = author;
     }
 
     public String getImage() {
-        return Image;
+        return image;
     }
 
     public void setImage(String image) {
-        Image = image;
+        this.image = image;
     }
 
     public String getSubtitle() {
-        return Subtitle;
+        return subtitle;
     }
 
     public void setSubtitle(String subtitle) {
-        Subtitle = subtitle;
+        this.subtitle = subtitle;
     }
 
     public String getPublisher() {
-        return Publisher;
+        return publisher;
     }
 
     public void setPublisher(String publisher) {
-        Publisher = publisher;
+        this.publisher = publisher;
     }
 
     public String getYear() {
-        return Year;
+        return year;
     }
 
     public void setYear(String year) {
-        Year = year;
+        this.year = year;
     }
 
     public int getPages() {
-        return Pages;
+        return pages;
     }
 
     public void setPages(int pages) {
-        Pages = pages;
+        this.pages = pages;
     }
 
     public String getIsbn() {
@@ -125,10 +112,10 @@ public class Book {
     }
 
     public String getGenre() {
-        return Genre;
+        return genre;
     }
 
     public void setGenre(String genre) {
-        Genre = genre;
+        this.genre = genre;
     }
 }

@@ -4,53 +4,56 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
-import wolox.training.repositories.BookRepository;
+import wolox.training.repositories.IBookRepositoryDAO;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private IBookRepositoryDAO IBookRepositoryDAO;
+
+
 
     @GetMapping
     public Iterable findAll() {
-        return bookRepository.findAll();
+        return IBookRepositoryDAO.findAll();
     }
 
-    @GetMapping("/author/{bookAuthor}")
+    /*@GetMapping("/author/{bookAuthor}")
     public Book findByAuthor(@PathVariable String bookAuthor) {
-        return bookRepository.findByAuthor(bookAuthor);
-    }
+        return IBookRepositoryDAO.findByAuthor(bookAuthor);
+    }*/
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return bookRepository.findById(id)
+        return IBookRepositoryDAO.findById(id)
                 .orElseThrow(BookNotFoundException::new);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return bookRepository.save(book);
+        return IBookRepositoryDAO.save(book);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        bookRepository.findById(id)
+        IBookRepositoryDAO.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        bookRepository.deleteById(id);
+        IBookRepositoryDAO.deleteById(id);
     }
-/*
+
     @PutMapping("/{id}")
     public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }
-        bookRepository.findById(id)
+        IBookRepositoryDAO.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        return bookRepository.save(book);
-    }*/
+        return IBookRepositoryDAO.save(book);
+    }
 }
