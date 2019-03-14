@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-public class BooksUser {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,11 +20,11 @@ public class BooksUser {
     @Column(nullable = false)
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "booksUser")
+    @OneToMany(mappedBy = "client")
     private List<Book> books;
 
 
-    public BooksUser() {
+    public Client() {
     }
 
     public long getId() {

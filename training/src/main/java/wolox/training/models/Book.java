@@ -36,8 +36,8 @@ public class Book {
     private String genre;
 
     @ManyToOne
-    @JoinColumn(name="books_user_id")
-    private BooksUser booksUser;
+    @JoinColumn(name="client_id")
+    private Client client;
 
 
     public Book() {
@@ -123,12 +123,11 @@ public class Book {
         this.genre = genre;
     }
 
-   public BooksUser getUser() {
-        return booksUser;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(BooksUser user) {
-        this.booksUser = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
-
 }
