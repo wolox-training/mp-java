@@ -22,10 +22,6 @@ public class Client {
     private LocalDate birthdate;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "client_id",
-                    referencedColumnName = "id"))
     private List<Book> books = new ArrayList<>();
 
     public Client() {
