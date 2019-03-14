@@ -16,24 +16,24 @@ import wolox.training.repositories.ClientRepository;
 public class ClientController {
 
     @Autowired
-    private ClientRepository ClientRepository;
+    private ClientRepository clientRepository;
 
 
     @GetMapping
     public Iterable findAll() {
-        return ClientRepository.findAll();
+        return clientRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public Client findOne(@PathVariable Long id) {
-        return ClientRepository.findById(id)
+        return clientRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Client addBook(@RequestBody Book book, @PathVariable Long id) {
-        Client client = ClientRepository.findById(id)
+        Client client = clientRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         client.addBook(book);
         return client;
@@ -42,14 +42,14 @@ public class ClientController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody Client client) {
-        return ClientRepository.save(client);
+        return clientRepository.save(client);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        ClientRepository.findById(id)
+        clientRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        ClientRepository.deleteById(id);
+        clientRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
@@ -57,8 +57,8 @@ public class ClientController {
         if (client.getId() != id) {
             throw new UserIdMismatchException();
         }
-        ClientRepository.findById(id)
+        clientRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        return ClientRepository.save(client);
+        return clientRepository.save(client);
     }
 }

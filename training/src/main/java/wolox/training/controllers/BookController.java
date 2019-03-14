@@ -14,31 +14,31 @@ import wolox.training.repositories.BookRepository;
 public class BookController {
 
     @Autowired
-    private BookRepository BookRepository;
+    private BookRepository bookRepository;
 
 
     @GetMapping
     public Iterable findAll() {
-        return BookRepository.findAll();
+        return bookRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return BookRepository.findById(id)
+        return bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return BookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        BookRepository.findById(id)
+        bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        BookRepository.deleteById(id);
+        bookRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
@@ -46,8 +46,8 @@ public class BookController {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }
-        BookRepository.findById(id)
+        bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-        return BookRepository.save(book);
+        return bookRepository.save(book);
     }
 }
