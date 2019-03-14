@@ -20,4 +20,5 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+	compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
 }
