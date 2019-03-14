@@ -4,6 +4,7 @@ import wolox.training.exceptions.BookAlreadyOwnedException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,9 +21,12 @@ public class Client {
     @Column(nullable = false)
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "client")
-    private List<Book> books;
-
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id",
+                    referencedColumnName = "id"))
+    private List<Book> books = new ArrayList<>();
 
     public Client() {
     }
