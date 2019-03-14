@@ -35,6 +35,11 @@ public class Book {
     
     private String genre;
 
+    @ManyToOne
+    @JoinColumn(name="books_user_id")
+    private BooksUser booksUser;
+
+
     public Book() {
     }
 
@@ -117,4 +122,13 @@ public class Book {
     public void setGenre(String genre) {
         this.genre = genre;
     }
+
+   public BooksUser getUser() {
+        return booksUser;
+    }
+
+    public void setUser(BooksUser user) {
+        this.booksUser = user;
+    }
+
 }
