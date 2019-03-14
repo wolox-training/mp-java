@@ -1,6 +1,7 @@
 package wolox.training.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Book {
@@ -34,6 +35,10 @@ public class Book {
     private String isbn;
     
     private String genre;
+
+    @ManyToMany(mappedBy = "books")
+    private List<Client> clients;
+
 
     public Book() {
     }
@@ -116,5 +121,13 @@ public class Book {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
     }
 }
