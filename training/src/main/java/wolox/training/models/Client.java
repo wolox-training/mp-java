@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
 import javax.persistence.*;
@@ -31,15 +32,12 @@ public class Client {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
+        Preconditions.checkArgument(username != null && !username.isEmpty());
         this.username = username;
     }
 
@@ -48,7 +46,8 @@ public class Client {
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
+
+        this.birthdate = Preconditions.checkNotNull(birthdate);
     }
 
    public List<Book> getBooks() {
