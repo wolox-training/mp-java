@@ -37,8 +37,7 @@ public class Client {
     }
 
     public void setUsername(String username) {
-        Preconditions.checkNotNull(username);
-        Preconditions.checkArgument(!username.isEmpty());
+        Preconditions.checkArgument(username != null && !username.isEmpty());
         this.username = username;
     }
 
@@ -47,8 +46,8 @@ public class Client {
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        Preconditions.checkNotNull(birthdate);
-        this.birthdate = birthdate;
+
+        this.birthdate = Preconditions.checkNotNull(birthdate);
     }
 
    public List<Book> getBooks() {
