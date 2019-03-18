@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Book {
@@ -31,7 +32,7 @@ public class Book {
     private String year;
 
     @Column(nullable = false)
-    private int pages;
+    private Integer pages;
 
     @Column(nullable = false)
     private String isbn;
@@ -103,11 +104,11 @@ public class Book {
         this.year = year;
     }
 
-    public int getPages() {
+    public Integer getPages() {
         return pages;
     }
 
-    public void setPages(int pages) {
+    public void setPages(Integer pages) {
         this.pages = pages;
     }
 
@@ -134,5 +135,29 @@ public class Book {
 
     public void setClients(List<Client> clients) {
         this.clients = clients;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return id == book.id &&
+                Objects.equals(title, book.title) &&
+                Objects.equals(author, book.author) &&
+                Objects.equals(image, book.image) &&
+                Objects.equals(subtitle, book.subtitle) &&
+                Objects.equals(publisher, book.publisher) &&
+                Objects.equals(year, book.year) &&
+                Objects.equals(pages, book.pages) &&
+                Objects.equals(isbn, book.isbn) &&
+                Objects.equals(genre, book.genre) &&
+                Objects.equals(clients, book.clients);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, title, author, image, subtitle, publisher, year, pages, isbn, genre, clients);
     }
 }

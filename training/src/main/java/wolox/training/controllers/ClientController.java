@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import wolox.training.exceptions.UserIdMismatchException;
-import wolox.training.exceptions.UserNotFoundException;
+import wolox.training.exceptions.ClientIdMismatchException;
+import wolox.training.exceptions.ClientNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.Client;
 import wolox.training.repositories.ClientRepository;
@@ -27,14 +27,13 @@ public class ClientController {
     @GetMapping("/{id}")
     public Client findOne(@PathVariable Long id) {
         return clientRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(ClientNotFoundException::new);
     }
 
     @PostMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
     public Client addBook(@RequestBody Book book, @PathVariable Long id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(ClientNotFoundException::new);
         client.addBook(book);
         return client;
     }
@@ -48,17 +47,17 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         clientRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(ClientNotFoundException::new);
         clientRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
     public Client updateBook(@RequestBody Client client, @PathVariable Long id) {
         if (client.getId() != id) {
-            throw new UserIdMismatchException();
+            throw new ClientIdMismatchException();
         }
         clientRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(ClientNotFoundException::new);
         return clientRepository.save(client);
     }
 }

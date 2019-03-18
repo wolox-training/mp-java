@@ -1,5 +1,7 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
@@ -8,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Client {
@@ -20,6 +23,8 @@ public class Client {
     private String username;
 
     @Column(nullable = false)
+    @JsonFormat
+            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthdate;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
@@ -50,8 +55,8 @@ public class Client {
         this.birthdate = Preconditions.checkNotNull(birthdate);
     }
 
-   public List<Book> getBooks() {
-        return (List<Book>) Collections.unmodifiableCollection(books) ;
+    public List<Book> getBooks() {
+        return Collections.unmodifiableList(books) ;
     }
 
     public void setBooks(List<Book> books) {
@@ -66,5 +71,21 @@ public class Client {
         books.remove(book);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Client)) return false;
+        Client client = (Client) o;
+        return id == client.id &&
+                Objects.equals(username, client.username) &&
+                Objects.equals(birthdate, client.birthdate) &&
+                Objects.equals(books, client.books);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, username, birthdate, books);
+    }
 }
 
