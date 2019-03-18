@@ -142,8 +142,7 @@ public class Book {
         if (this == o) return true;
         if (!(o instanceof Book)) return false;
         Book book = (Book) o;
-        return id == book.id &&
-                Objects.equals(title, book.title) &&
+        return Objects.equals(title, book.title) &&
                 Objects.equals(author, book.author) &&
                 Objects.equals(image, book.image) &&
                 Objects.equals(subtitle, book.subtitle) &&
