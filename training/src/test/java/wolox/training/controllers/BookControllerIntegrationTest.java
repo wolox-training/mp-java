@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
+import wolox.training.services.OpenLibraryService;
 import wolox.training.utils.Serializer;
 import wolox.training.utils.mocks.BookMock;
 
@@ -25,7 +26,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
@@ -43,7 +43,10 @@ public class BookControllerIntegrationTest {
     private MockMvc mvc;
 
     @MockBean
-    private BookRepository service;
+    private BookRepository bookRepository;
+
+    @MockBean
+    private OpenLibraryService openLibraryService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -58,7 +61,7 @@ public class BookControllerIntegrationTest {
 
         List<Book> allBook = Arrays.asList(book);
 
-        given(service.findAll()).willReturn(allBook);
+        given(bookRepository.findAll()).willReturn(allBook);
 
         mvc.perform(get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -73,7 +76,7 @@ public class BookControllerIntegrationTest {
 
         Book book = BookMock.createBook();
 
-        given(service.findById(book.getId())).willReturn(Optional.of(book));
+        given(bookRepository.findById(book.getId())).willReturn(Optional.of(book));
 
         String url = "/api/books/" + book.getId();
 
@@ -95,9 +98,72 @@ public class BookControllerIntegrationTest {
 
         Book book = BookMock.createBook();
 
-        when(service.findById(book.getId()))
+        when(bookRepository.findById(book.getId()))
                 .thenThrow(new BookNotFoundException());
-        String url = "/api/books/" + book.getId();
+        String url = BASE_URL + book.getId();
+
+        ResultActions resultActions = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenBook_whenGetBookByIsbn_thenReturnJsonObjectFromLocalDB()
+            throws Exception {
+
+        Book book = BookMock.createBook();
+
+        given(bookRepository.findByIsbn(book.getIsbn())).willReturn(book);
+
+        String url = BASE_URL + "/isbn/"+book.getIsbn();
+
+        ResultActions resultActions = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+
+        Book response = objectMapper.readValue(contentAsString, Book.class);
+        assertThat(response.equals(book));
+
+    }
+
+    @Test
+    public void givenBook_whenGetBookByIsbn_thenReturnJsonObjectFromExternalApi()
+            throws Exception {
+
+        Book book = BookMock.createBook();
+
+        given(bookRepository.findByIsbn(book.getIsbn())).willReturn(null);
+
+        given(openLibraryService.bookInfo(book.getIsbn())).willReturn(book);
+
+        String url = BASE_URL + "/isbn/"+book.getIsbn();
+
+        ResultActions resultActions = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+
+        Book response = objectMapper.readValue(contentAsString, Book.class);
+        assertThat(response.equals(book));
+
+    }
+
+    @Test
+    public void givenBook_whenGetBookByIsbn_throwNotFoundError() throws Exception {
+
+        Book book = BookMock.createBook();
+
+        given(bookRepository.findByIsbn(book.getIsbn())).willReturn(null);
+        given(openLibraryService.bookInfo(book.getIsbn())).willReturn(null);
+
+        when(bookRepository.findById(book.getId()))
+                .thenThrow(new BookNotFoundException());
+        String url = BASE_URL + book.getId();
 
         ResultActions resultActions = mvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -114,7 +180,7 @@ public class BookControllerIntegrationTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(book );
 
-        given(service.save(book)).willReturn(book);
+        given(bookRepository.save(book)).willReturn(book);
 
 
         String url = BASE_URL;
@@ -137,9 +203,9 @@ public class BookControllerIntegrationTest {
 
         Book book = BookMock.createBook();
 
-        given(service.findById(book.getId())).willReturn(Optional.of(book));
+        given(bookRepository.findById(book.getId())).willReturn(Optional.of(book));
 
-        doNothing().when(service).deleteById(book.getId());
+        doNothing().when(bookRepository).deleteById(book.getId());
 
         String url = "/api/books/" + book.getId();
 
@@ -159,7 +225,7 @@ public class BookControllerIntegrationTest {
 
         Book book = BookMock.createBook();
 
-        when(service.findById(book.getId()))
+        when(bookRepository.findById(book.getId()))
                 .thenThrow(new BookNotFoundException());
 
         String url = "/api/books/" + book.getId();
@@ -176,8 +242,8 @@ public class BookControllerIntegrationTest {
 
         Book book = BookMock.createBook();
         String requestJson = Serializer.serializeObject(book);
-        given(service.findById(book.getId())).willReturn(Optional.of(book));
-        given(service.save(book)).willReturn(book);
+        given(bookRepository.findById(book.getId())).willReturn(Optional.of(book));
+        given(bookRepository.save(book)).willReturn(book);
 
         String url = "/api/books/" + book.getId();
 
@@ -200,7 +266,7 @@ public class BookControllerIntegrationTest {
         Book book = BookMock.createBook();
         String requestJson = Serializer.serializeObject(book);
 
-        when(service.findById(book.getId()))
+        when(bookRepository.findById(book.getId()))
                 .thenThrow(new BookNotFoundException());
 
         String url = "/api/books/" + book.getId();
