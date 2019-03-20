@@ -7,10 +7,7 @@ import wolox.training.exceptions.BookAlreadyOwnedException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class Client {
@@ -23,12 +20,18 @@ public class Client {
     private String username;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     @JsonFormat
             (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthdate;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     private List<Book> books = new ArrayList<>();
+
+
+
 
     public Client() {
     }
@@ -55,6 +58,14 @@ public class Client {
         this.birthdate = Preconditions.checkNotNull(birthdate);
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public List<Book> getBooks() {
         return Collections.unmodifiableList(books) ;
     }
@@ -78,6 +89,7 @@ public class Client {
         Client client = (Client) o;
         return id == client.id &&
                 Objects.equals(username, client.username) &&
+                Objects.equals(password, client.password) &&
                 Objects.equals(birthdate, client.birthdate) &&
                 Objects.equals(books, client.books);
     }
@@ -85,7 +97,7 @@ public class Client {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, username, birthdate, books);
+        return Objects.hash(id, username, password, birthdate, books);
     }
 }
 

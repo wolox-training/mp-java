@@ -80,7 +80,7 @@ public class ClientRepositoryIntegrationTest {
 
 
     @Test
-    public void whenFindByNAuthor_thenReturnBook() {
+    public void whenFindByAuthor_thenReturnBook() {
        // given
         Client client = ClientMock.createClient();
 
