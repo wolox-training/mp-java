@@ -46,17 +46,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, String author, String image, String subtitle, String publisher, String year, Integer pages, String isbn, String genre) {
-        this.title = title;
-        this.author = author;
-        this.image = image;
-        this.subtitle = subtitle;
-        this.publisher = publisher;
-        this.year = year;
-        this.pages = pages;
-        this.isbn = isbn;
-        this.genre = genre;
-    }
+
 
     public long getId() {
         return id;

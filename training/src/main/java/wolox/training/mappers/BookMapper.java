@@ -26,7 +26,17 @@ public class BookMapper {
         String year = rootNode.findValue("publish_date").toString();
         String image = rootNode.findValue("medium").toString();
 
-        Book book = new Book(title, authors, image, subtitle, publishers, year, pages, isbn, genders);
+        Book book = new Book();
+        book.setAuthor(authors);
+        book.setImage(image);
+        book.setTitle(title);
+        book.setSubtitle(subtitle);
+        book.setGenre(genders);
+        book.setIsbn(isbn);
+        book.setPages(pages);
+        book.setPublisher(publishers);
+        book.setYear(year);
+
         return book;
     }
 }
