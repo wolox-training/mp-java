@@ -69,4 +69,20 @@ public class BookRepositoryIntegrationTest {
                 .isEqualTo(book.getAuthor());
 
     }
+
+    @Test
+    public void whenFindByISBN_thenReturnBook() {
+        // given
+        Book book = BookMock.createBook();
+        entityManager.persist(book);
+        entityManager.flush();
+
+        // when
+        Book found = bookRepository.findByIsbn(book.getIsbn());
+
+        // then
+        assertThat(found.getIsbn())
+                .isEqualTo(book.getIsbn());
+
+    }
 }

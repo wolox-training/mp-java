@@ -8,6 +8,7 @@ import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
+import wolox.training.services.OpenLibraryService;
 
 @RestController
 @RequestMapping("/api/books")
@@ -16,6 +17,8 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private OpenLibraryService openLibraryService;
 
     @GetMapping
     public Iterable findAll() {
@@ -26,6 +29,20 @@ public class BookController {
     public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
+    }
+
+    @GetMapping("/isbn/{isbn}")
+    public Book findOneByISBN(@PathVariable String isbn) {
+        Book book = null;
+
+        book =  bookRepository.findByIsbn(isbn);
+        if (book == null){
+            book = openLibraryService.bookInfo(isbn);
+            if (book == null) throw new BookNotFoundException();
+            bookRepository.save(book);
+        }
+
+        return book;
     }
 
     @PostMapping
