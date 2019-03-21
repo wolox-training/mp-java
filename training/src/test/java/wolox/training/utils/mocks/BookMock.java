@@ -3,6 +3,7 @@ package wolox.training.utils.mocks;
 import org.apache.commons.lang3.RandomStringUtils;
 import wolox.training.models.Book;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public final class  BookMock {

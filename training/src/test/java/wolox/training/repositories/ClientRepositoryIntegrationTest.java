@@ -14,7 +14,9 @@ import wolox.training.utils.mocks.BookMock;
 import wolox.training.utils.mocks.ClientMock;
 
 import javax.persistence.PersistenceException;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -95,4 +97,30 @@ public class ClientRepositoryIntegrationTest {
                 .isEqualTo(client.getUsername());
 
     }
+
+    @Test
+    public void whenFindByUsernameContainingAndBirthdateBetween_thenReturnBook() {
+        Map mapParameters = new HashMap();
+        mapParameters.put("username", "maximiliano");
+        mapParameters.put("birthdate", LocalDate.of(1993, Month.DECEMBER, 28));
+
+        // given
+        Client foundClient = ClientMock.createClient(mapParameters);
+        mapParameters.clear();
+
+        Client otherClient = ClientMock.createClient(mapParameters);
+        mapParameters.put("username", "paula");
+        mapParameters.put("birthdate", LocalDate.of(1990, Month.JULY, 31));
+        entityManager.persist(foundClient);
+        entityManager.persist(foundClient);
+        entityManager.flush();
+        LocalDate from = LocalDate.of(1900, Month.DECEMBER, 28);
+        LocalDate to = LocalDate.of(2000, Month.DECEMBER, 28);
+        // when
+        List<Client> founds = clientRepository.findByUsernameContainingAndBirthdateBetween("mili", from, to);
+
+        // then
+        assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
+    }
 }
+
