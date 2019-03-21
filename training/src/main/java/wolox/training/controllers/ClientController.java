@@ -2,6 +2,7 @@ package wolox.training.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,8 @@ import wolox.training.exceptions.ClientNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.Client;
 import wolox.training.repositories.ClientRepository;
+
+import java.security.Principal;
 
 
 @RestController
@@ -32,6 +35,11 @@ public class ClientController {
     public Client findOne(@PathVariable Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(ClientNotFoundException::new);
+    }
+
+    @GetMapping("/me")
+    public Client me(Authentication authentication) {
+        return clientRepository.findByUsername(authentication.getName());
     }
 
     @PostMapping("/{id}")
