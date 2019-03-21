@@ -45,7 +45,6 @@ public class ClientController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody Client client) {
-        client.setPassword(passwordEncoder.encode(client.getPassword()));
         return clientRepository.save(client);
     }
 

@@ -28,12 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        auth.inMemoryAuthentication()
-                .passwordEncoder(encoder)
-                .withUser("spring")
-                .password(encoder.encode("secret"))
-                .roles("USER");
         auth.authenticationProvider(authProvider);
     }
 
