@@ -117,7 +117,7 @@ public class ClientRepositoryIntegrationTest {
         LocalDate from = LocalDate.of(1900, Month.DECEMBER, 28);
         LocalDate to = LocalDate.of(2000, Month.DECEMBER, 28);
         // when
-        List<Client> founds = clientRepository.findByUsernameContainingAndBirthdateBetween("mili", from, to);
+        List<Client> founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("mIlI", from, to);
 
         // then
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));

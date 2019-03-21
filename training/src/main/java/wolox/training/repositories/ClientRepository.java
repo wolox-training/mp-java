@@ -11,5 +11,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Client findByUsername(String username);
 
 
-    List<Client> findByUsernameContainingAndBirthdateBetween(String username, LocalDate from, LocalDate to);
+    List<Client> findByUsernameContainingIgnoreCaseAndBirthdateBetween(String username, LocalDate from, LocalDate to);
 }
