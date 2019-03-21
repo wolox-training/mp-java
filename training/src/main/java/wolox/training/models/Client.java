@@ -1,16 +1,14 @@
 package wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class Client {
@@ -23,12 +21,19 @@ public class Client {
     private String username;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @Column(nullable = false)
     @JsonFormat
             (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthdate;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     private List<Book> books = new ArrayList<>();
+
+
+
 
     public Client() {
     }
@@ -53,6 +58,14 @@ public class Client {
     public void setBirthdate(LocalDate birthdate) {
 
         this.birthdate = Preconditions.checkNotNull(birthdate);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = Preconditions.checkNotNull(password);;
     }
 
     public List<Book> getBooks() {

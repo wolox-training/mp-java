@@ -11,6 +11,7 @@ public final class ClientMock {
     public static Client createClient() {
         Client client = new Client();
         client.setUsername(RandomStringUtils.randomAlphabetic(10));
+        client.setPassword(RandomStringUtils.randomAlphabetic(20));
         client.setBirthdate(LocalDate.now());
         return  client;
     }

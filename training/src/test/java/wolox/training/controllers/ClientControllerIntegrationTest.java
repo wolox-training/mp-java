@@ -1,15 +1,13 @@
 package wolox.training.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -17,13 +15,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import wolox.training.exceptions.ClientNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.Client;
-import wolox.training.repositories.ClientRepository;
+import wolox.training.providers.CustomAuthenticationProvider;
 import wolox.training.repositories.ClientRepository;
 import wolox.training.utils.Serializer;
 import wolox.training.utils.mocks.BookMock;
 import wolox.training.utils.mocks.ClientMock;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +32,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,8 +50,12 @@ public class ClientControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private CustomAuthenticationProvider authProvider;
+
     private final  static String BASE_URL = "/api/clients/";
 
+    @WithMockUser("spring")
     @Test
     public void givenClients_whenGetClients_thenReturnJsonArray()
             throws Exception {
@@ -64,13 +66,26 @@ public class ClientControllerIntegrationTest {
 
         given(service.findAll()).willReturn(allClient);
 
-        mvc.perform(get("/api/clients")
+        mvc.perform(get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].username", is(client.getUsername())));
     }
 
+    @Test
+    public void givenClients_whenGetClients_throwUnauthorizedError()
+            throws Exception {
+
+        Client client = ClientMock.createClient();
+
+
+        mvc.perform(get(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenGetClientById_thenReturnJsonObject()
             throws Exception {
@@ -93,6 +108,7 @@ public class ClientControllerIntegrationTest {
 
     }
 
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenGetClientById_throwNotFoundError() throws Exception {
 
@@ -106,23 +122,25 @@ public class ClientControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenCreateClient_thenReturnJsonObject()
             throws Exception {
 
         Client client = ClientMock.createClient();
         String requestJson = Serializer.serializeObject(client);
+        // Add password
+        String serializePass = ",\n \"password\":\"" + client.getPassword() + "\"\n}";
+        int length = requestJson.length();
+        requestJson = requestJson.substring(0, length-2) + serializePass;
 
         given(service.save(client)).willReturn(client);
 
-
-        String url = "/api/clients";
+        String url = BASE_URL;
 
         ResultActions resultActions = mvc.perform(post(url).contentType(APPLICATION_JSON_UTF8)
                 .content(requestJson))
                 .andExpect(status().isCreated());
-
         MvcResult result = resultActions.andReturn();
         String contentAsString = result.getResponse().getContentAsString();
 
@@ -131,6 +149,7 @@ public class ClientControllerIntegrationTest {
 
     }
 
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenAddBook_thenReturnJsonObject()
             throws Exception {
@@ -150,13 +169,12 @@ public class ClientControllerIntegrationTest {
 
         MvcResult result = resultActions.andReturn();
         String contentAsString = result.getResponse().getContentAsString();
+        assertThat(objectMapper.readValue(contentAsString, Book.class));
 
-        Client response = objectMapper.readValue(contentAsString, Client.class);
-        assertThat(response.equals(client));
 
     }
 
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenAddBook_throwNotFoundError() throws Exception {
 
@@ -174,7 +192,7 @@ public class ClientControllerIntegrationTest {
                 .andExpect(status().isNotFound());
 
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenDeleteClient_thenReturnJsonObject()
             throws Exception {
@@ -196,7 +214,7 @@ public class ClientControllerIntegrationTest {
         assertThat(contentAsString.isEmpty());
 
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenDeleteClient_throwNotFoundError() throws Exception {
 
@@ -213,7 +231,7 @@ public class ClientControllerIntegrationTest {
                 .andExpect(status().isNotFound());
 
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenUpdateClient_thenReturnJsonObject()
             throws Exception {
@@ -238,7 +256,7 @@ public class ClientControllerIntegrationTest {
         assertThat(response.equals(client));
 
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenUpdateClient_throwNotFoundError() throws Exception {
 
@@ -257,7 +275,7 @@ public class ClientControllerIntegrationTest {
                 .andExpect(status().isNotFound());
 
     }
-
+    @WithMockUser("spring")
     @Test
     public void givenClient_whenUpdateClient_throwClientIdMismatchError() throws Exception {
 
