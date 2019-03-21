@@ -152,7 +152,6 @@ public class BookControllerIntegrationTest {
 
         MvcResult result = resultActions.andReturn();
         String contentAsString = result.getResponse().getContentAsString();
-
         Book response = objectMapper.readValue(contentAsString, Book.class);
         assertThat(response.equals(book));
 

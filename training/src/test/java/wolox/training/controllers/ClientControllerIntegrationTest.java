@@ -129,15 +129,23 @@ public class ClientControllerIntegrationTest {
 
         Client client = ClientMock.createClient();
         String requestJson = Serializer.serializeObject(client);
+        // Add password
+        String serializePass = ",\n \"password\":\"" + client.getPassword() + "\"\n}";
+        int length = requestJson.length();
+        requestJson = requestJson.substring(0, length-2) + serializePass;
 
         given(service.save(client)).willReturn(client);
-
 
         String url = BASE_URL;
 
         ResultActions resultActions = mvc.perform(post(url).contentType(APPLICATION_JSON_UTF8)
                 .content(requestJson))
                 .andExpect(status().isCreated());
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+
+        Client response = objectMapper.readValue(contentAsString, Client.class);
+        assertThat(response.equals(client));
 
     }
 

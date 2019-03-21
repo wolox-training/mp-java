@@ -1,7 +1,8 @@
 package wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
@@ -20,6 +21,7 @@ public class Client {
     private String username;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false)
@@ -63,7 +65,7 @@ public class Client {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Preconditions.checkNotNull(password);;
     }
 
     public List<Book> getBooks() {
@@ -89,7 +91,6 @@ public class Client {
         Client client = (Client) o;
         return id == client.id &&
                 Objects.equals(username, client.username) &&
-                Objects.equals(password, client.password) &&
                 Objects.equals(birthdate, client.birthdate) &&
                 Objects.equals(books, client.books);
     }
@@ -97,7 +98,7 @@ public class Client {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, username, password, birthdate, books);
+        return Objects.hash(id, username, birthdate, books);
     }
 }
 
