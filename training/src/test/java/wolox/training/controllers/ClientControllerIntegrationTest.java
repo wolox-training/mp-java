@@ -87,6 +87,29 @@ public class ClientControllerIntegrationTest {
 
     @WithMockUser("spring")
     @Test
+    public void givenClient_whenGetMe_thenReturnJsonObject()
+            throws Exception {
+
+        Client client = ClientMock.createClient();
+
+        given(service.findByUsername("spring")).willReturn(client);
+
+        String url = BASE_URL + "/me";
+
+        ResultActions resultActions = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+
+        Client response = objectMapper.readValue(contentAsString, Client.class);
+        assertThat(response.equals(client));
+
+    }
+
+    @WithMockUser("spring")
+    @Test
     public void givenClient_whenGetClientById_thenReturnJsonObject()
             throws Exception {
 
@@ -121,8 +144,7 @@ public class ClientControllerIntegrationTest {
         ResultActions resultActions = mvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-    }
-    @WithMockUser("spring")
+    }    @WithMockUser("spring")
     @Test
     public void givenClient_whenCreateClient_thenReturnJsonObject()
             throws Exception {

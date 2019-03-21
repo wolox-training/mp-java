@@ -32,9 +32,6 @@ public class Client {
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     private List<Book> books = new ArrayList<>();
 
-
-
-
     public Client() {
     }
 
