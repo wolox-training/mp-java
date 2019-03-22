@@ -119,17 +119,17 @@ public class ClientRepositoryIntegrationTest {
         LocalDate to = LocalDate.of(2000, Month.DECEMBER, 28);
 
         // when
-        List<Client> founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("mIlI", from, to);
+        List<Client> founds = clientRepository.getAll("mIlI", from, to);
         // then
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("mIlI", null, null);
+        founds = clientRepository.getAll("mIlI", null, null);
         // then
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween(null, from, to);
+        founds = clientRepository.getAll(null, from, to);
         // then
         assertThat(founds.size() == 2);
     }

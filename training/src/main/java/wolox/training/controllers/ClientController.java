@@ -13,6 +13,7 @@ import wolox.training.models.Client;
 import wolox.training.repositories.ClientRepository;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 
 @RestController
@@ -27,8 +28,8 @@ public class ClientController {
 
 
     @GetMapping
-    public Iterable findAll() {
-        return clientRepository.findAll();
+    public Iterable findAll(@RequestParam(required = false) String username, @RequestParam(required = false) LocalDate from, @RequestParam(required = false) LocalDate to) {
+        return clientRepository.getAll(username,from,to);
     }
 
     @GetMapping("/{id}")

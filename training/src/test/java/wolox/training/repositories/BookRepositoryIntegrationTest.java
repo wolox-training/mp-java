@@ -144,7 +144,7 @@ public class BookRepositoryIntegrationTest {
         entityManager.persist(otherBook);
         entityManager.persist( BookMock.createBook());
         entityManager.flush();
-        
+
         // when
         List<Book> founds = bookRepository.getAll(foundBook.getGenre(),foundBook.getPublisher(),foundBook.getYear(),
                 foundBook.getAuthor(),foundBook.getPages(),foundBook.getTitle(),foundBook.getSubtitle(),foundBook.getIsbn(),
