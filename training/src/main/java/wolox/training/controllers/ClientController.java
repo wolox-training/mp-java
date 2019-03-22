@@ -29,6 +29,7 @@ public class ClientController {
 
     @GetMapping
     public Iterable findAll(@RequestParam(required = false) String username, @RequestParam(required = false) LocalDate from, @RequestParam(required = false) LocalDate to) {
+        if (username == null ) username = "";
         return clientRepository.getAll(username,from,to);
     }
 

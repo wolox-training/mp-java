@@ -82,7 +82,7 @@ public class ClientRepositoryIntegrationTest {
 
 
     @Test
-    public void whenFindByAuthor_thenReturnBook() {
+    public void whenFindByUsername_thenReturnClient() {
        // given
         Client client = ClientMock.createClient();
 
@@ -99,7 +99,7 @@ public class ClientRepositoryIntegrationTest {
     }
 
     @Test
-    public void whenFindByUsernameContainingAndBirthdateBetween_thenReturnBook() {
+    public void whenGetAll_thenReturnClients() {
         Map mapParameters = new HashMap();
         mapParameters.put("username", "maximiliano");
         mapParameters.put("birthdate", LocalDate.of(1993, Month.DECEMBER, 28));
@@ -129,7 +129,7 @@ public class ClientRepositoryIntegrationTest {
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.getAll(null, from, to);
+        founds = clientRepository.getAll("", from, to);
         // then
         assertThat(founds.size() == 2);
     }
