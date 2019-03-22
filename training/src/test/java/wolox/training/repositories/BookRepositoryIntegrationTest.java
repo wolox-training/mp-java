@@ -16,6 +16,7 @@ import wolox.training.models.Book;
 import wolox.training.utils.mocks.BookMock;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -55,7 +56,7 @@ public class BookRepositoryIntegrationTest {
 
 
     @Test
-    public void whenFindByNAuthor_thenReturnBook() {
+    public void whenFindByAuthor_thenReturnBook() {
        // given
         Book book = BookMock.createBook();
         entityManager.persist(book);
@@ -83,6 +84,47 @@ public class BookRepositoryIntegrationTest {
         // then
         assertThat(found.getIsbn())
                 .isEqualTo(book.getIsbn());
+
+    }
+
+     @Test
+    public void whenFindByGenreAndPublisherAndYear_thenReturnBook() {
+        // given
+
+        Book foundBook = BookMock.createBook();
+        Book otherBook = BookMock.createBook();
+        entityManager.persist(foundBook);
+        entityManager.persist(otherBook);
+        entityManager.flush();
+
+        // when
+        List<Book> founds = bookRepository.findByGenreAndPublisherAndYear(foundBook.getGenre(),foundBook.getPublisher(),foundBook.getYear());
+
+        // then
+        assertThat(founds.size() == 1 );
+        assertThat(founds.get(0).equals(foundBook));
+
+        // when
+        founds = bookRepository.findByGenreAndPublisherAndYear(foundBook.getGenre(),foundBook.getPublisher(), null);
+
+        // then
+        assertThat(founds.size() == 1 );
+        assertThat(founds.get(0).equals(foundBook));
+
+
+        // when
+        founds = bookRepository.findByGenreAndPublisherAndYear(foundBook.getGenre(),null,foundBook.getYear());
+
+        // then
+        assertThat(founds.size() == 1 );
+        assertThat(founds.get(0).equals(foundBook));
+
+         // when
+         founds = bookRepository.findByGenreAndPublisherAndYear(null,foundBook.getPublisher(),foundBook.getYear());
+
+         // then
+         assertThat(founds.size() == 1 );
+         assertThat(founds.get(0).equals(foundBook));
 
     }
 }
