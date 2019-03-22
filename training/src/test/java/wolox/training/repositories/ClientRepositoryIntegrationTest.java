@@ -108,19 +108,30 @@ public class ClientRepositoryIntegrationTest {
         Client foundClient = ClientMock.createClient(mapParameters);
         mapParameters.clear();
 
-        Client otherClient = ClientMock.createClient(mapParameters);
+
         mapParameters.put("username", "paula");
         mapParameters.put("birthdate", LocalDate.of(1990, Month.JULY, 31));
+        Client otherClient = ClientMock.createClient(mapParameters);
         entityManager.persist(foundClient);
-        entityManager.persist(foundClient);
+        entityManager.persist(otherClient);
         entityManager.flush();
         LocalDate from = LocalDate.of(1900, Month.DECEMBER, 28);
         LocalDate to = LocalDate.of(2000, Month.DECEMBER, 28);
+
         // when
         List<Client> founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("mIlI", from, to);
-
         // then
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
+
+        // when
+        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("mIlI", null, null);
+        // then
+        assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
+
+        // when
+        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween(null, from, to);
+        // then
+        assertThat(founds.size() == 2);
     }
 }
 
