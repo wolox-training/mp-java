@@ -10,6 +10,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByAuthor( String author );
     Book findByIsbn( String isbn );
-    List<Book> findByGenreAndPublisherAndYear(String genre, String publisher, String year);
+    @Query("SELECT b FROM Book b WHERE (:genre is null or b.genre = :genre) and (:publisher is null or b.publisher = :publisher) and (:year is null or b.year = :year)")
+    List<Book> findByGenreAndPublisherAndYear(@Param("genre") String genre, @Param("publisher") String publisher, @Param("year") String year);
 }
 
