@@ -129,7 +129,7 @@ public class ClientRepositoryIntegrationTest {
         assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween(null, from, to);
+        founds = clientRepository.findByUsernameContainingIgnoreCaseAndBirthdateBetween("", from, to);
         // then
         assertThat(founds.size() == 2);
     }
