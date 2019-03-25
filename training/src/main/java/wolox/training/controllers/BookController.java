@@ -2,6 +2,8 @@ package wolox.training.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import wolox.training.exceptions.BookIdMismatchException;
@@ -21,12 +23,12 @@ public class BookController {
     private OpenLibraryService openLibraryService;
 
     @GetMapping
-    public Iterable findAll(@RequestParam(required = false) String genre, @RequestParam(required = false) String publisher,
-                                    @RequestParam(required = false) String year, @RequestParam(required = false) String author,
-                                    @RequestParam(required = false) Integer pages, @RequestParam(required = false) String title,
-                                    @RequestParam(required = false) String subtitle, @RequestParam(required = false) String isbn,
-                                    @RequestParam(required = false) String image) {
-        return bookRepository.getAll(genre,publisher,year,author,pages,title,subtitle,isbn,image);
+    public Page<Book> findAll(Pageable pageable, @RequestParam(required = false) String genre, @RequestParam(required = false) String publisher,
+                              @RequestParam(required = false) String year, @RequestParam(required = false) String author,
+                              @RequestParam(required = false) Integer pages, @RequestParam(required = false) String title,
+                              @RequestParam(required = false) String subtitle, @RequestParam(required = false) String isbn,
+                              @RequestParam(required = false) String image) {
+        return bookRepository.getAll(genre,publisher,year,author,pages,title,subtitle,isbn,image,pageable);
     }
 
     @GetMapping("/{id}")

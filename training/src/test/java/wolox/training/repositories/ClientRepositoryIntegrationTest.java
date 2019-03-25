@@ -5,6 +5,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.exceptions.BookAlreadyOwnedException;
@@ -117,21 +121,23 @@ public class ClientRepositoryIntegrationTest {
         entityManager.flush();
         LocalDate from = LocalDate.of(1900, Month.DECEMBER, 28);
         LocalDate to = LocalDate.of(2000, Month.DECEMBER, 28);
+        Sort sort = new Sort(Sort.Direction.DESC, "username");
+        Pageable pageRequest = new PageRequest(0, 20, sort);
 
         // when
-        List<Client> founds = clientRepository.getAll("mIlI", from, to);
+        Page<Client> page = clientRepository.getAll("mIlI", from, to, pageRequest);
         // then
-        assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
+        assertThat(page.getContent().size() == 1 && page.getContent().get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.getAll("mIlI", null, null);
+        page = clientRepository.getAll("mIlI", null, null, pageRequest);
         // then
-        assertThat(founds.size() == 1 && founds.get(0).equals(foundClient));
+        assertThat(page.getContent().size() == 1 && page.getContent().get(0).equals(foundClient));
 
         // when
-        founds = clientRepository.getAll("", from, to);
+        page = clientRepository.getAll("", from, to, pageRequest);
         // then
-        assertThat(founds.size() == 2);
+        assertThat(page.getContent().size() == 2);
     }
 }
 

@@ -1,10 +1,12 @@
 package wolox.training.repositories;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import wolox.training.models.Book;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
@@ -18,8 +20,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "(:author is null or b.author = :author) and (:pages is null or b.pages = :pages) and " +
             "(:title is null or b.title = :title) and (:subtitle is null or b.subtitle = :subtitle) and " +
             "(:isbn is null or b.isbn = :isbn) and (:image is null or b.image = :image)")
-    List<Book> getAll(@Param("genre") String genre, @Param("publisher") String publisher, @Param("year") String year,
+    Page<Book> getAll(@Param("genre") String genre, @Param("publisher") String publisher, @Param("year") String year,
                       @Param("author") String author, @Param("pages") Integer pages, @Param("title") String title,
                       @Param("subtitle") String subtitle, @Param("isbn") String isbn,
-                      @Param("image") String image);
+                      @Param("image") String image, Pageable pageable);
 }

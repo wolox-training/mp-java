@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.models.Book;
@@ -144,30 +148,31 @@ public class BookRepositoryIntegrationTest {
         entityManager.persist(otherBook);
         entityManager.persist( BookMock.createBook());
         entityManager.flush();
-
+        Sort sort = new Sort(Sort.Direction.DESC, "title");
+        Pageable pageRequest = new PageRequest(0, 20, sort);
         // when
-        List<Book> founds = bookRepository.getAll(foundBook.getGenre(),foundBook.getPublisher(),foundBook.getYear(),
+        Page<Book> page = bookRepository.getAll(foundBook.getGenre(),foundBook.getPublisher(),foundBook.getYear(),
                 foundBook.getAuthor(),foundBook.getPages(),foundBook.getTitle(),foundBook.getSubtitle(),foundBook.getIsbn(),
-                foundBook.getImage());
+                foundBook.getImage(),pageRequest);
 
         // then
-        assertThat(founds.size() == 1 );
-        assertThat(founds.get(0).equals(foundBook));
+        assertThat(page.getTotalElements() == 1 );
+        assertThat(page.getContent().get(0).equals(foundBook));
 
         // when
-        founds = bookRepository.getAll(foundBook.getGenre(),null,null, null, null,
-                null, null, null, null);
+        page = bookRepository.getAll(foundBook.getGenre(),null,null, null, null,
+                null, null, null, null, pageRequest);
         // then
-        assertThat(founds.size() == 2 );
+        assertThat(page.getTotalElements() == 2 );
 
 
 
         // when
-        founds = bookRepository.getAll(null,null,null, null, null,
-                null, null,  null, null);
+        page = bookRepository.getAll(null,null,null, null, null,
+                null, null,  null, null, pageRequest);
 
         // then
-        assertThat(founds.size() == 3 );
+        assertThat(page.getTotalElements() == 3 );
 
     }
 }

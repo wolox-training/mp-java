@@ -5,9 +5,13 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,9 +23,11 @@ import wolox.training.models.Book;
 import wolox.training.providers.CustomAuthenticationProvider;
 import wolox.training.repositories.BookRepository;
 import wolox.training.services.OpenLibraryService;
+import wolox.training.utils.PageBuilder;
 import wolox.training.utils.Serializer;
 import wolox.training.utils.mocks.BookMock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +62,8 @@ public class BookControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Pageable pageRequest;
+
     private final  static String BASE_URL = "/api/books/";
     @WithMockUser("spring")
     @Test
@@ -65,14 +73,24 @@ public class BookControllerIntegrationTest {
         Book book = BookMock.createBook();
 
         List<Book> allBook = Arrays.asList(book);
+        Sort sort = new Sort(Sort.Direction.DESC, "title");
+        pageRequest = new PageRequest(0, 20, sort);
+        Page<Book> emptyPage = new PageBuilder<Book>()
+                .elements(new ArrayList<>())
+                .pageRequest(pageRequest)
+                .totalElements(0)
+                .build();
+        given(bookRepository.getAll(null,null,null,null,null,null,null,null,null, pageRequest)).willReturn(emptyPage);
 
-        given(bookRepository.getAll(null,null,null,null,null,null,null,null,null)).willReturn(allBook);
+        String url = BASE_URL + "?sort=title,desc";
 
-        mvc.perform(get(BASE_URL)
+        ResultActions resultActions = mvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].title", is(book.getTitle())));
+                .andExpect(status().isOk());
+
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+
     }
     @WithMockUser("spring")
     @Test
