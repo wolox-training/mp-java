@@ -1,6 +1,8 @@
 package wolox.training.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -29,11 +31,11 @@ public class ClientController {
 
 
     @GetMapping
-    public Iterable findAll(@RequestParam(required = false) String username,
-                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    public Page<Client> findAll(@RequestParam(required = false) String username,
+                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to, Pageable pageable) {
         if (username == null ) username = "";
-        return clientRepository.getAll(username,from,to);
+        return clientRepository.getAll(username,from,to, pageable);
     }
 
     @GetMapping("/{id}")
