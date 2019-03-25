@@ -1,6 +1,7 @@
 package wolox.training.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +29,9 @@ public class ClientController {
 
 
     @GetMapping
-    public Iterable findAll(@RequestParam(required = false) String username, @RequestParam(required = false) LocalDate from, @RequestParam(required = false) LocalDate to) {
+    public Iterable findAll(@RequestParam(required = false) String username,
+                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         if (username == null ) username = "";
         return clientRepository.getAll(username,from,to);
     }
