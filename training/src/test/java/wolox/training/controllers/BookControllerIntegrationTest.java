@@ -66,7 +66,7 @@ public class BookControllerIntegrationTest {
 
         List<Book> allBook = Arrays.asList(book);
 
-        given(bookRepository.findAll()).willReturn(allBook);
+        given(bookRepository.getAll(null,null,null,null,null,null,null,null,null)).willReturn(allBook);
 
         mvc.perform(get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))

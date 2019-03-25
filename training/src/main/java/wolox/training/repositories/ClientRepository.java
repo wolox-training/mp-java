@@ -15,5 +15,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE (:username is null or  lower(c.username) like lower(concat('%', :username,'%')) ) and " +
             "(cast(:from AS date) is null or c.birthdate >= :from) and " +
             " (cast(:to AS date) is null or c.birthdate <= :to)")
-    List<Client> findByUsernameContainingIgnoreCaseAndBirthdateBetween(@Param("username") String username, @Param("from")  LocalDate from, @Param("to") LocalDate to);
+    List<Client> getAll(@Param("username") String username, @Param("from")  LocalDate from, @Param("to") LocalDate to);
+
+
 }

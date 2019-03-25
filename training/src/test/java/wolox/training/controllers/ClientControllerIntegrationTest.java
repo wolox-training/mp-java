@@ -64,7 +64,7 @@ public class ClientControllerIntegrationTest {
 
         List<Client> allClient = Arrays.asList(client);
 
-        given(service.findAll()).willReturn(allClient);
+        given(service.getAll("",null,null)).willReturn(allClient);
 
         mvc.perform(get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))

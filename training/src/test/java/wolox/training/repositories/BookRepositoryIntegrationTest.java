@@ -16,7 +16,11 @@ import wolox.training.models.Book;
 import wolox.training.utils.mocks.BookMock;
 
 import javax.persistence.PersistenceException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -125,6 +129,45 @@ public class BookRepositoryIntegrationTest {
          // then
          assertThat(founds.size() == 1 );
          assertThat(founds.get(0).equals(foundBook));
+
+    }
+
+    @Test
+    public void whenGetAllWithFilters_thenReturnBook() {
+
+        // given
+        Book foundBook = BookMock.createBook();
+        Map mapParameters = new HashMap();
+        Book otherBook = BookMock.createBook();
+        otherBook.setGenre(foundBook.getGenre());
+        entityManager.persist(foundBook);
+        entityManager.persist(otherBook);
+        entityManager.persist( BookMock.createBook());
+        entityManager.flush();
+
+        // when
+        List<Book> founds = bookRepository.getAll(foundBook.getGenre(),foundBook.getPublisher(),foundBook.getYear(),
+                foundBook.getAuthor(),foundBook.getPages(),foundBook.getTitle(),foundBook.getSubtitle(),foundBook.getIsbn(),
+                foundBook.getImage());
+
+        // then
+        assertThat(founds.size() == 1 );
+        assertThat(founds.get(0).equals(foundBook));
+
+        // when
+        founds = bookRepository.getAll(foundBook.getGenre(),null,null, null, null,
+                null, null, null, null);
+        // then
+        assertThat(founds.size() == 2 );
+
+
+
+        // when
+        founds = bookRepository.getAll(null,null,null, null, null,
+                null, null,  null, null);
+
+        // then
+        assertThat(founds.size() == 3 );
 
     }
 }
